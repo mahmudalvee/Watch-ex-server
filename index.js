@@ -18,7 +18,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         const allProductsCollection= client.db('watchEx').collection('allproducts');
-        
+        const bookingsCollection= client.db('watchEx').collection('bookings');
+
         app.get('/advertisedProducts', async(req,res) => {
             const query = {};
             const advertisedProducts= await allProductsCollection.find(query).toArray();
@@ -31,6 +32,14 @@ async function run(){
             const categoryProducts = await allProductsCollection.find(query).toArray();
             res.send(categoryProducts);
         });
+
+        app.post('/bookings', async(req, res) => {
+            const booking = req.body
+            console.log(booking);
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        })
+
     }
     finally{
 
