@@ -19,6 +19,7 @@ async function run(){
     try{
         const allProductsCollection= client.db('watchEx').collection('allproducts');
         const bookingsCollection= client.db('watchEx').collection('bookings');
+        const usersCollection= client.db('watchEx').collection('users');
 
         app.get('/advertisedProducts', async(req,res) => {
             const query = {};
@@ -44,6 +45,12 @@ async function run(){
             const booking = req.body
             console.log(booking);
             const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        }),
+
+        app.post('/users', async(req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
             res.send(result);
         })
 
