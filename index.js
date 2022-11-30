@@ -46,6 +46,44 @@ async function run(){
             res.send(advertisedProducts);
         })
 
+        app.post('/products', async(req, res) => {
+            const newService = req.body;
+            const result = await allProductsCollection.insertOne(newService);
+            res.send(result);
+        })
+
+        app.get('/myproducts', async(req, res) =>{
+            let query ={};
+            if(req.query.email){
+                query ={
+                    email: req.query.email
+                }
+            }
+            const cursor =reviewCollection.find(query).sort( { _id : -1 } );
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
+
+        app.delete('/myproducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        app.patch('/myproducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body.status
+            const query = { _id: ObjectId(id) }
+            const updatedDoc = {
+                $set:{
+                    status: status
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updatedDoc);
+            res.send(result);
+        })
+
         app.get('/category/:id', async (req, res) => {
             const id = req.params.id;
             const query = { category_id: (id) };
