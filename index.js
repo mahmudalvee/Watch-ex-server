@@ -40,9 +40,21 @@ async function run(){
         const bookingsCollection= client.db('watchEx').collection('bookings');
         const usersCollection= client.db('watchEx').collection('users');
 
+        app.put('/advertisedProducts/:id', async(req,res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const options = {upsert: true};
+            const updatedDoc = {
+                $set: {
+                ad_status: 'true'
+            }
+        }
+        const result= await allProductsCollection.updateOne(query, updatedDoc, options);
+        res.send(result);
+        })
+
         app.get('/advertisedProducts', async(req,res) => {
-            const query = {};
-            const advertisedProducts= await allProductsCollection.find(query).toArray();
+            const advertisedProducts= await allProductsCollection.find( { ad_status: "true" } ).toArray();
             res.send(advertisedProducts);
         })
 
